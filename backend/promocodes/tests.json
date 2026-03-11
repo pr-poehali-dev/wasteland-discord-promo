@@ -1,0 +1,17 @@
+{
+  "tests": [
+    {
+      "name": "Get list without password returns 403",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 403
+    },
+    {
+      "name": "Create without password returns 403",
+      "method": "POST",
+      "path": "/",
+      "body": {"code": "TEST", "role_name": "Member"},
+      "expectedStatus": 403
+    }
+  ]
+}
