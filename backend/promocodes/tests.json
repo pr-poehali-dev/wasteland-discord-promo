@@ -1,16 +1,17 @@
 {
   "tests": [
     {
-      "name": "Get list without password returns 403",
-      "method": "GET",
+      "name": "Activate unknown code returns 404",
+      "method": "POST",
       "path": "/",
-      "expectedStatus": 403
+      "body": {"action": "activate", "code": "FAKE-CODE-XXXX"},
+      "expectedStatus": 404
     },
     {
       "name": "Create without password returns 403",
       "method": "POST",
       "path": "/",
-      "body": {"code": "TEST", "role_name": "Member"},
+      "body": {"action": "create", "code": "TEST", "role_name": "Member"},
       "expectedStatus": 403
     }
   ]

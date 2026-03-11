@@ -1,9 +1,10 @@
 """
 Управление промокодами Wasteland.
-GET /  — список промокодов (требует admin_password)
-POST / — создать промокод (требует admin_password)
-DELETE / — удалить промокод (требует admin_password)
-POST /activate — активировать промокод (публичный)
+Все запросы на POST /, action в теле:
+  action=activate   — активировать промокод (публичный)
+  action=list       — список промокодов (требует admin_password)
+  action=create     — создать промокод (требует admin_password)
+  action=delete     — удалить промокод (требует admin_password)
 """
 
 import json
@@ -29,14 +30,14 @@ def handler(event: dict, context) -> dict:
     if event.get('httpMethod') == 'OPTIONS':
         return {'statusCode': 200, 'headers': CORS, 'body': ''}
 
-    method = event.get('httpMethod', 'GET')
-    path = event.get('path', '/')
     body = {}
     if event.get('body'):
         body = json.loads(event['body'])
 
-    # POST /activate — активация промокода (публичный)
-    if method == 'POST' and path.endswith('/activate'):
+    action = body.get('action', '')
+
+    # --- АКТИВАЦИЯ ---
+    if action == 'activate':
         code = body.get('code', '').strip().upper()
         if not code:
             return {'statusCode': 400, 'headers': CORS, 'body': json.dumps({'error': 'Промокод не указан'})}
@@ -80,16 +81,15 @@ def handler(event: dict, context) -> dict:
             'discord_invite': discord_invite,
         })}
 
-    # GET / — список промокодов (только админ)
-    if method == 'GET':
-        params = event.get('queryStringParameters') or {}
-        if params.get('admin_password') != os.environ.get('ADMIN_PASSWORD', ''):
+    # --- СПИСОК ---
+    if action == 'list':
+        if not check_admin(body):
             return {'statusCode': 403, 'headers': CORS, 'body': json.dumps({'error': 'Нет доступа'})}
 
         conn = get_conn()
         cur = conn.cursor()
         cur.execute(
-            f"SELECT id, code, role_name, discord_invite, max_uses, used_count, is_active, created_at, expires_at FROM {schema()}.promocodes ORDER BY created_at DESC"
+            f"SELECT id, code, role_name, discord_invite, max_uses, used_count, is_active, created_at FROM {schema()}.promocodes ORDER BY created_at DESC"
         )
         rows = cur.fetchall()
         conn.close()
@@ -98,14 +98,13 @@ def handler(event: dict, context) -> dict:
                 'id': r[0], 'code': r[1], 'role_name': r[2], 'discord_invite': r[3],
                 'max_uses': r[4], 'used_count': r[5], 'is_active': r[6],
                 'created_at': r[7].isoformat() if r[7] else None,
-                'expires_at': r[8].isoformat() if r[8] else None,
             }
             for r in rows
         ]
         return {'statusCode': 200, 'headers': CORS, 'body': json.dumps(result)}
 
-    # POST / — создать промокод (только админ)
-    if method == 'POST':
+    # --- СОЗДАТЬ ---
+    if action == 'create':
         if not check_admin(body):
             return {'statusCode': 403, 'headers': CORS, 'body': json.dumps({'error': 'Нет доступа'})}
 
@@ -113,7 +112,6 @@ def handler(event: dict, context) -> dict:
         role_name = body.get('role_name', '').strip()
         discord_invite = body.get('discord_invite', '').strip()
         max_uses = body.get('max_uses', 1)
-        expires_at = body.get('expires_at') or None
 
         if not code or not role_name:
             return {'statusCode': 400, 'headers': CORS, 'body': json.dumps({'error': 'Укажи код и роль'})}
@@ -121,16 +119,16 @@ def handler(event: dict, context) -> dict:
         conn = get_conn()
         cur = conn.cursor()
         cur.execute(
-            f"INSERT INTO {schema()}.promocodes (code, role_name, discord_invite, max_uses, expires_at) VALUES (%s, %s, %s, %s, %s) RETURNING id",
-            (code, role_name, discord_invite or None, max_uses, expires_at)
+            f"INSERT INTO {schema()}.promocodes (code, role_name, discord_invite, max_uses) VALUES (%s, %s, %s, %s) RETURNING id",
+            (code, role_name, discord_invite or None, max_uses)
         )
         new_id = cur.fetchone()[0]
         conn.commit()
         conn.close()
         return {'statusCode': 200, 'headers': CORS, 'body': json.dumps({'success': True, 'id': new_id})}
 
-    # DELETE / — удалить промокод (только админ)
-    if method == 'DELETE':
+    # --- УДАЛИТЬ ---
+    if action == 'delete':
         if not check_admin(body):
             return {'statusCode': 403, 'headers': CORS, 'body': json.dumps({'error': 'Нет доступа'})}
 
@@ -145,4 +143,4 @@ def handler(event: dict, context) -> dict:
         conn.close()
         return {'statusCode': 200, 'headers': CORS, 'body': json.dumps({'success': True})}
 
-    return {'statusCode': 405, 'headers': CORS, 'body': json.dumps({'error': 'Method not allowed'})}
+    return {'statusCode': 400, 'headers': CORS, 'body': json.dumps({'error': 'Неизвестное действие'})}
