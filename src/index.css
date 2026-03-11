@@ -4,89 +4,51 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 0 0% 5%;
+    --foreground: 30 15% 85%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 0 0% 8%;
+    --card-foreground: 30 15% 85%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 30 15% 85%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 25 95% 53%;
+    --primary-foreground: 0 0% 5%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 30 15% 75%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 30 10% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 25 95% 53%;
+    --accent-foreground: 0 0% 5%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 40%;
+    --destructive-foreground: 30 15% 85%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 0 0% 15%;
+    --input: 0 0% 12%;
+    --ring: 25 95% 53%;
 
-    --radius: 0.5rem;
+    --radius: 0.25rem;
 
-    --sidebar-background: 0 0% 98%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 30 15% 85%;
+    --sidebar-primary: 25 95% 53%;
+    --sidebar-primary-foreground: 0 0% 5%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 30 15% 85%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 25 95% 53%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Wasteland custom */
+    --orange: #f97316;
+    --orange-dim: #c2571a;
+    --ash: #8a7a6e;
+    --dust: #3d3028;
+    --void: #0d0b09;
   }
 }
 
@@ -97,5 +59,254 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: "IBM Plex Mono", monospace;
+    background-color: #0d0b09;
   }
+}
+
+/* Grain texture overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.35;
+}
+
+/* Scanline effect */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.07) 2px,
+    rgba(0, 0, 0, 0.07) 4px
+  );
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #0d0b09;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--orange-dim);
+}
+
+/* Cursor blink */
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.cursor-blink::after {
+  content: "|";
+  animation: blink 1s step-end infinite;
+  color: var(--orange);
+  margin-left: 1px;
+}
+
+/* Glow effect */
+.glow-orange {
+  text-shadow:
+    0 0 20px rgba(249, 115, 22, 0.6),
+    0 0 40px rgba(249, 115, 22, 0.3);
+}
+
+.glow-border {
+  box-shadow:
+    0 0 0 1px rgba(249, 115, 22, 0.3),
+    0 0 20px rgba(249, 115, 22, 0.1),
+    inset 0 0 20px rgba(249, 115, 22, 0.03);
+}
+
+.glow-border:focus-within {
+  box-shadow:
+    0 0 0 1px rgba(249, 115, 22, 0.7),
+    0 0 30px rgba(249, 115, 22, 0.25),
+    inset 0 0 20px rgba(249, 115, 22, 0.05);
+}
+
+/* Input glow */
+.input-wasteland {
+  background: rgba(13, 11, 9, 0.8);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  color: #f97316;
+  font-family: "IBM Plex Mono", monospace;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.input-wasteland::placeholder {
+  color: rgba(138, 122, 110, 0.4);
+  letter-spacing: 0.15em;
+}
+
+.input-wasteland:focus {
+  outline: none;
+  border-color: rgba(249, 115, 22, 0.7);
+  box-shadow:
+    0 0 0 1px rgba(249, 115, 22, 0.3),
+    0 0 30px rgba(249, 115, 22, 0.15);
+  background: rgba(13, 11, 9, 0.95);
+}
+
+/* Button wasteland */
+.btn-wasteland {
+  background: linear-gradient(135deg, #f97316 0%, #c2571a 100%);
+  color: #0d0b09;
+  font-family: "Oswald", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-wasteland::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+.btn-wasteland:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 30px rgba(249, 115, 22, 0.4);
+}
+
+.btn-wasteland:active {
+  transform: translateY(0);
+}
+
+/* Fade in animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes glitch {
+  0% {
+    clip-path: inset(0 0 95% 0);
+    transform: translate(-2px, 0);
+  }
+  10% {
+    clip-path: inset(10% 0 85% 0);
+    transform: translate(2px, 0);
+  }
+  20% {
+    clip-path: inset(40% 0 50% 0);
+    transform: translate(-2px, 0);
+  }
+  30% {
+    clip-path: inset(60% 0 30% 0);
+    transform: translate(2px, 0);
+  }
+  40% {
+    clip-path: inset(80% 0 5% 0);
+    transform: translate(-1px, 0);
+  }
+  50%,
+  100% {
+    clip-path: inset(0 0 0 0);
+    transform: translate(0, 0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeInUp 0.7s ease forwards;
+}
+
+.animate-fade {
+  animation: fadeIn 1s ease forwards;
+}
+
+.delay-100 {
+  animation-delay: 0.1s;
+  opacity: 0;
+}
+.delay-200 {
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+.delay-300 {
+  animation-delay: 0.3s;
+  opacity: 0;
+}
+.delay-500 {
+  animation-delay: 0.5s;
+  opacity: 0;
+}
+.delay-700 {
+  animation-delay: 0.7s;
+  opacity: 0;
+}
+
+/* Horizontal divider */
+.divider-glow {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(249, 115, 22, 0.5) 30%,
+    rgba(249, 115, 22, 0.8) 50%,
+    rgba(249, 115, 22, 0.5) 70%,
+    transparent 100%
+  );
+}
+
+/* Avatar ring */
+.avatar-ring {
+  box-shadow:
+    0 0 0 2px rgba(249, 115, 22, 0.4),
+    0 0 20px rgba(249, 115, 22, 0.2),
+    0 0 0 4px rgba(13, 11, 9, 1);
+}
+
+/* Background radial */
+.bg-radial-wasteland {
+  background:
+    radial-gradient(
+      ellipse 60% 40% at 50% 30%,
+      rgba(249, 115, 22, 0.06) 0%,
+      transparent 70%
+    ),
+    #0d0b09;
 }
